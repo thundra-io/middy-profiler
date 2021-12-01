@@ -1,0 +1,38 @@
+{
+  "name": "middy-profiler",
+  "version": "0.0.0",
+  "description": "Middy AWS Lambda CPU profiler middleware",
+  "author": "Serkan Özal <serkanozal86@gmail.com> (https://github.com/serkan-ozal)",
+  "homepage": "https://github.com/serkan-ozal/middy-profiler",
+  "repository": "serkan-ozal/middy-profiler",
+  "license": "MIT",
+  "main": "src/index.js",
+  "keywords": [
+    "middy",
+    "serverless",
+    "aws",
+    "lambda",
+    "profiler"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "prettier --config .prettierrc.json --write ./src/*.js",
+    "release-patch": "release-it --ci --git.commit --git.push --git.tag --git.tagName='v${version}' --github.release --no-git.requireCleanWorkingDir --no-git.requireUpstream --npm.publish --npm.skipChecks",
+    "release-minor": "release-it minor --ci --git.commit --git.push --git.tag --git.tagName='v${version}' --github.release --no-git.requireCleanWorkingDir --no-git.requireUpstream --npm.publish --npm.skipChecks",
+    "release-major": "release-it major --ci --git.commit --git.push --git.tag --git.tagName='v${version}' --github.release --no-git.requireCleanWorkingDir --no-git.requireUpstream --npm.publish --npm.skipChecks",
+    "release-minor-without-tag": "release-it minor --ci --no-git.commit --no-git.push --no-git.tag --no-git.tagName='v${version}' --no-github.release --no-git.requireCleanWorkingDir --no-git.requireUpstream --npm.publish --npm.skipChecks"
+  },
+  "files": [
+    "src/",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "peerDependencies": {
+    "@middy/core": "^2.5.3"
+  },
+  "devDependencies": {
+    "prettier": "^2.2.1",
+    "release-it": "^14.5.0"
+  }
+}

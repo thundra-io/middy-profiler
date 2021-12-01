@@ -1,0 +1,33 @@
+name: NPM Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_scale:
+        description: "Version scale"
+        required: true
+        default: "patch"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Configure Git User
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: "10.x"
+          registry-url: https://registry.npmjs.org
+      - name: NPM Install
+        run: npm install
+      - name: NPM Lint
+        run: npm run lint
+      - name: NPM Publish
+        run: npm run release-${{ github.event.inputs.version_scale }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
