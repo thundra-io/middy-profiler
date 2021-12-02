@@ -10,15 +10,19 @@ By default, file name (`${fileName}`) is `cpu_profile` but you can configure it 
 Then, you can download the CPU profiling file from AWS S3 and open with any CPU profiler tool like **Chrome DevTools**:
 
 - Go to **Inspector** in **Chrome DevTools** by browsing to `chrome://inspect/`:
+
 ![Go to Inspector](./assets/01-go-to-inspector.png)
 
 - Click `Open dedicated DevTools for Node` to go to the `Node.js DevTools` page:
+
 ![Go to Node.js DevTools](./assets/02-go-to-node-devtools.png)
 
 - Go to `Profiler` tab, click the `Load` button and select the downloaded CPU profiling file to load:
+
 ![Node.js DevTools](./assets/03-node-devtools.png)
 
 - Then select the `Chart` to see the CPU profiling as flame graph:
+
 ![CPU Profiles](./assets/04-cpu-profiles.png)
  
 ## Installation
@@ -53,7 +57,7 @@ module.exports.handler = middy(handler).use(profiler());
 * Configure AWS S3 bucket name to put the CPU profiling data 
 by *environment variable* or *options* passed to middleware. 
 
-**Note:** This configuration is **mandatory** and if it is not specified, profiling will be disabled.
+  **Note:** This configuration is **mandatory** and if it is not specified, profiling will be disabled.
 
   - **By environment variable:**
   Set `MIDDY_PROFILER_S3_BUCKET_NAME` environment variable with the target bucket name.
