@@ -57,7 +57,9 @@ module.exports.handler = middy(handler).use(profiler());
 * Configure AWS S3 bucket name to put the CPU profiling data 
 by *environment variable* or *options* passed to middleware. 
 
-  **Note:** This configuration is **mandatory** and if it is not specified, profiling will be disabled.
+  **Note 1:** Your AWS Lambda function must have enough permission (`PutObject`) for writing to the specified target AWS S3 bucket. 
+
+  **Note 2:** This configuration is **mandatory** and if it is not specified, profiling will be disabled.
 
   - **By environment variable:**
   Set `MIDDY_PROFILER_S3_BUCKET_NAME` environment variable with the target bucket name.
