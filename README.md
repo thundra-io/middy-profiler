@@ -83,7 +83,7 @@ by *environment variable* or *options* passed to middleware.
   ```
 
 * **Optionally**, you can configure CPU sampling interval in milliseconds. 
-Please note that a low sampling interval may result in an extremely high level of profiling output being captured.
+Please note that a high (for ex. `100`, `500`, `1000`) sampling interval may result in an extremely high level of profiling output (not enough detail) being captured.
 By default, sampling interval is `10` milliseconds and 
 it can be configured by *environment variable* or *options* passed to middleware:
 
