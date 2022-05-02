@@ -1,7 +1,7 @@
 const inspector = require('inspector')
 const session = new inspector.Session()
-const S3 = require('aws-sdk/clients/s3')
-const s3Client = new S3()
+
+let s3Client
 
 async function _sessionPost(key, obj = {}) {
     return new Promise((resolve, reject) => {
@@ -36,6 +36,10 @@ async function _putProfilingDataToS3(
     functionName,
     awsRequestId
 ) {
+    if (!s3Client) {
+        const S3 = require('aws-sdk/clients/s3')
+        s3Client = new S3()
+    }
     const params = {
         Body: JSON.stringify(profilingData),
         Bucket: bucketName,
