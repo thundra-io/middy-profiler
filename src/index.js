@@ -1,7 +1,7 @@
 const inspector = require('inspector')
 const session = new inspector.Session()
-const aws = require('aws-sdk')
-const s3 = new aws.S3()
+const S3 = require('aws-sdk/clients/s3')
+const s3Client = new S3()
 
 async function _sessionPost(key, obj = {}) {
     return new Promise((resolve, reject) => {
@@ -41,7 +41,7 @@ async function _putProfilingDataToS3(
         Bucket: bucketName,
         Key: `${pathPrefix}${functionName}/${awsRequestId}/${fileName}.cpuprofile`,
     }
-    return s3.putObject(params).promise()
+    return s3Client.putObject(params).promise()
 }
 
 const profilerMiddleware = (opts = {}) => {
