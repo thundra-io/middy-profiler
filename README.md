@@ -143,6 +143,11 @@ It's value is `cpu_profile` by default but can be configured by *environment var
   ```
 
 
+## Use Cases
+
+- [Vincent Voyer](https://twitter.com/vvoyer) discovered significant performance impact of enabling source maps with the help of this profiler. You can find more info here: https://twitter.com/vvoyer/status/1498436054851981320
+
+
 ## Contributing
 
 Everyone is very welcome to contribute to this repository. 
