@@ -1,32 +1,18 @@
-const inspector = require('inspector')
-const session = new inspector.Session()
+const {
+    startProfiler,
+    finishProfiler,
+    isProfilerStarted,
+} = require('./profiler')
+const {
+    MIDDY_PROFILER_SAMPLING_INTERVAL_ENV_VAR_NAME,
+    MIDDY_PROFILER_S3_BUCKET_NAME_ENV_VAR_NAME,
+    MIDDY_PROFILER_S3_PATH_PREFIX_ENV_VAR_NAME,
+    MIDDY_PROFILER_S3_FILE_NAME_ENV_VAR_NAME,
+    MIDDY_PROFILER_SAMPLING_INTERVAL_DEFAULT_VALUE,
+    MIDDY_PROFILER_S3_FILE_NAME_DEFAULT_VALUE,
+} = require('./constants')
 
 let s3Client
-
-async function _sessionPost(key, obj = {}) {
-    return new Promise((resolve, reject) => {
-        session.post(key, obj, (err, msg) => (err ? reject(err) : resolve(msg)))
-    })
-}
-
-async function _startProfiler(samplingInterval) {
-    session.connect()
-
-    await _sessionPost('Profiler.enable')
-    await _sessionPost('Profiler.setSamplingInterval', {
-        interval: samplingInterval,
-    })
-    await _sessionPost('Profiler.start')
-}
-
-async function _finishProfiler() {
-    try {
-        const { profile } = await _sessionPost('Profiler.stop')
-        return profile
-    } finally {
-        session.disconnect()
-    }
-}
 
 async function _putProfilingDataToS3(
     profilingData,
@@ -50,29 +36,28 @@ async function _putProfilingDataToS3(
 
 const profilerMiddleware = (opts = {}) => {
     const samplingInterval =
-        parseInt(process.env['MIDDY_PROFILER_SAMPLING_INTERVAL']) ||
+        parseInt(process.env[MIDDY_PROFILER_SAMPLING_INTERVAL_ENV_VAR_NAME]) ||
         (opts && opts.samplingInterval) ||
-        10
+        MIDDY_PROFILER_SAMPLING_INTERVAL_DEFAULT_VALUE
     const bucketName =
-        process.env['MIDDY_PROFILER_S3_BUCKET_NAME'] ||
+        process.env[MIDDY_PROFILER_S3_BUCKET_NAME_ENV_VAR_NAME] ||
         (opts && opts.s3 && opts.s3.bucketName)
     const pathPrefix =
-        process.env['MIDDY_PROFILER_S3_PATH_PREFIX'] ||
+        process.env[MIDDY_PROFILER_S3_PATH_PREFIX_ENV_VAR_NAME] ||
         (opts && opts.s3 && opts.s3.pathPrefix) ||
         ''
     const fileName =
-        process.env['MIDDY_PROFILER_S3_FILE_NAME'] ||
+        process.env[MIDDY_PROFILER_S3_FILE_NAME_ENV_VAR_NAME] ||
         (opts && opts.s3 && opts.s3.fileName) ||
-        'cpu_profile'
+        MIDDY_PROFILER_S3_FILE_NAME_DEFAULT_VALUE
 
     const _onStart = async (request) => {
         if (!bucketName) {
             return
         }
         try {
-            await _startProfiler(samplingInterval)
-            request.internal.middyProfiler = {
-                profilerStarted: true,
+            if (!isProfilerStarted()) {
+                await startProfiler(samplingInterval)
             }
         } catch (e) {
             console.error('Unable to start profiler:', e)
@@ -80,15 +65,12 @@ const profilerMiddleware = (opts = {}) => {
     }
 
     const _onFinish = async (request) => {
-        const profilerStarted =
-            request.internal.middyProfiler &&
-            request.internal.middyProfiler.profilerStarted
-        if (!profilerStarted) {
+        if (!isProfilerStarted()) {
             return
         }
 
         try {
-            const profilingData = await _finishProfiler()
+            const profilingData = await finishProfiler()
             await _putProfilingDataToS3(
                 profilingData,
                 bucketName,
