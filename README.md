@@ -1,5 +1,9 @@
 # middy-profiler
 
+![build Status](https://github.com/serkan-ozal/middy-profiler/actions/workflows/build.yml/badge.svg)
+![npm version](https://badge.fury.io/js/middy-profiler.svg)
+![license](https://img.shields.io/badge/license-MIT-blue)
+
 Middy middleware for profiling CPU on AWS Lambda.
 Captured CPU profiling data is put into specified AWS S3 bucket with the following object/file name format:
 ```
