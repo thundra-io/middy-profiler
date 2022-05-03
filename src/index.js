@@ -11,6 +11,7 @@ const {
     MIDDY_PROFILER_SAMPLING_INTERVAL_DEFAULT_VALUE,
     MIDDY_PROFILER_S3_FILE_NAME_DEFAULT_VALUE,
 } = require('./constants')
+const logger = require('./logger')
 
 let s3Client
 
@@ -60,7 +61,7 @@ const profilerMiddleware = (opts = {}) => {
                 await startProfiler(samplingInterval)
             }
         } catch (e) {
-            console.error('Unable to start profiler:', e)
+            logger.error('Unable to start profiler:', e)
         }
     }
 
@@ -80,7 +81,7 @@ const profilerMiddleware = (opts = {}) => {
                 request.context.awsRequestId
             )
         } catch (e) {
-            console.error('Unable to finish profiler:', e)
+            logger.error('Unable to finish profiler:', e)
         }
     }
 
