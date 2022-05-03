@@ -85,6 +85,14 @@ by *environment variable* or *options* passed to middleware.
           })
       );
   ```
+  
+* **Optionally**, if you want to profile since the init phase at coldstart (by default profiler is activated by the start of request which doesn't include initialization phase such as main handler import/require, client/SDK creation, etc ...), you need to activate profiler during bootstrap:
+
+  - **By environment variable:**
+  Set (or append to existing one) `NODE_OPTIONS` environment variable with the bootstrap options to initialize profiler at startup.
+  ```
+  NODE_OPTIONS=-r middy-profiler/src/bootstrap
+  ```  
 
 * **Optionally**, you can configure CPU sampling interval in milliseconds. 
 Please note that a high (for ex. `100`, `500`, `1000`) sampling interval may result in an extremely high level of profiling output (not enough detail) being captured.
