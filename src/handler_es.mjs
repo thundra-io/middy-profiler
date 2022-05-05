@@ -5,6 +5,7 @@ import {
     MIDDY_PROFILER_HANDLER_ENV_VAR_NAME,
     MIDDY_PROFILER_SAMPLING_INTERVAL_DEFAULT_VALUE,
 } from './constants.js'
+import { beforeInvocation, afterInvocation } from './hooks.js'
 import logger from './logger.js'
 
 const samplingInterval =
@@ -26,6 +27,15 @@ const userHandler =
 
 // Export wrapper handler
 export async function wrapper(event, context) {
-    // Delegate to user handler
-    return userHandler(event, context)
+    await beforeInvocation(event, context)
+    try {
+        // Delegate to user handler
+        const responsePromise = userHandler(event, context)
+        const response = await responsePromise
+        await afterInvocation(event, context, response, null)
+        return response
+    } catch (error) {
+        await afterInvocation(event, context, null, error)
+        throw error
+    }
 }
