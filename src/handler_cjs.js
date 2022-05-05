@@ -5,6 +5,7 @@ const {
     MIDDY_PROFILER_HANDLER_ENV_VAR_NAME,
     MIDDY_PROFILER_SAMPLING_INTERVAL_DEFAULT_VALUE,
 } = require('./constants.js')
+const { beforeInvocation, afterInvocation } = require('./hooks.js')
 const logger = require('./logger.js')
 
 const samplingInterval =
@@ -46,6 +47,15 @@ module.exports.wrapper = async function (event, context) {
     // Ensure initialization is completed
     await ensureInitialized()
 
-    // Delegate to user handler
-    return userHandler(event, context)
+    await beforeInvocation(event, context)
+    try {
+        // Delegate to user handler
+        const responsePromise = userHandler(event, context)
+        const response = await responsePromise
+        await afterInvocation(event, context, response, null)
+        return response
+    } catch (error) {
+        await afterInvocation(event, context, null, error)
+        throw error
+    }
 }
