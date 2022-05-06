@@ -143,6 +143,14 @@ It's value is `cpu_profile` by default but can be configured by *environment var
           })
       );
   ```
+  
+* **Optionally**, you can disable/enable profiler without changing code even though it is registered to `middy` or self activated on bootstrap.
+
+  - **By environment variable:**
+  Set `MIDDY_PROFILER_ENABLE` environment variable to `false` to disable profiler or to `true` (which is default) to enable profiler back.
+  ```
+  MIDDY_PROFILER_ENABLE=false
+  ```  
 
 ## Standalone Usage (without Middy)
 
