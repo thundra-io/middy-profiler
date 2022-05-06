@@ -37,7 +37,9 @@ To install the middleware, you can use NPM:
 npm install --save middy-profiler
 ```
 
-**Note:** Requires `@middy/core` version `2.0.0`+
+**Note 1:** Requires `@middy/core` version `2.0.0`+. 
+
+**Note 2:** There is also **standalone** mode to be able to use `middy-profiler` without `middy` framework. You can check [Standalone Usage (without Middy)](#standalone-usage-without-middy) section for the details.
 
 
 ## Usage
@@ -142,6 +144,14 @@ It's value is `cpu_profile` by default but can be configured by *environment var
       );
   ```
 
+## Standalone Usage (without Middy)
+
+If you want to use `middy-profiler` standalone without `middy`, you need to activate standalone mode during bootstrap through environment variable without any code change. For activation, you need to set (or append to existing one) `NODE_OPTIONS` environment variable with the standalone mode bootstrap options to initialize profiler at startup:
+  ```
+  NODE_OPTIONS=-r middy-profiler/src/standalone
+  ```  
+  
+To configure profiler in the standalone mode, you can use **environment variables** mentioned in the [Usage](#usage) section above.  
 
 ## Use Cases
 
