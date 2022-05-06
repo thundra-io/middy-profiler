@@ -1,5 +1,14 @@
 const ORIGINAL_HANDLER_ENV_VAR_NAME = '_HANDLER'
-const { MIDDY_PROFILER_HANDLER_ENV_VAR_NAME } = require('./constants')
+const {
+    MIDDY_PROFILER_ENABLE_ENV_VAR_NAME,
+    MIDDY_PROFILER_HANDLER_ENV_VAR_NAME,
+} = require('./constants')
+
+const enable =
+    (process.env[MIDDY_PROFILER_ENABLE_ENV_VAR_NAME] || 'true') === 'true'
+if (!enable) {
+    return
+}
 
 const userHandler = process.env[ORIGINAL_HANDLER_ENV_VAR_NAME]
 const nodeVersion = parseInt(process.version.trim().replace(/^[=v]+/, ''))

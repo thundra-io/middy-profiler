@@ -1,4 +1,20 @@
 const {
+    MIDDY_PROFILER_ENABLE_ENV_VAR_NAME,
+    MIDDY_PROFILER_SAMPLING_INTERVAL_ENV_VAR_NAME,
+    MIDDY_PROFILER_S3_BUCKET_NAME_ENV_VAR_NAME,
+    MIDDY_PROFILER_S3_PATH_PREFIX_ENV_VAR_NAME,
+    MIDDY_PROFILER_S3_FILE_NAME_ENV_VAR_NAME,
+    MIDDY_PROFILER_SAMPLING_INTERVAL_DEFAULT_VALUE,
+    MIDDY_PROFILER_S3_FILE_NAME_DEFAULT_VALUE,
+} = require('./constants')
+
+const enable =
+    (process.env[MIDDY_PROFILER_ENABLE_ENV_VAR_NAME] || 'true') === 'true'
+if (!enable) {
+    return
+}
+
+const {
     registerBeforeInvocationCallback,
     registerAfterInvocationCallback,
 } = require('./hooks.js')
@@ -8,14 +24,7 @@ const {
     isProfilerStarted,
 } = require('./profiler')
 const { reportToS3 } = require('./reporter')
-const {
-    MIDDY_PROFILER_SAMPLING_INTERVAL_ENV_VAR_NAME,
-    MIDDY_PROFILER_S3_BUCKET_NAME_ENV_VAR_NAME,
-    MIDDY_PROFILER_S3_PATH_PREFIX_ENV_VAR_NAME,
-    MIDDY_PROFILER_S3_FILE_NAME_ENV_VAR_NAME,
-    MIDDY_PROFILER_SAMPLING_INTERVAL_DEFAULT_VALUE,
-    MIDDY_PROFILER_S3_FILE_NAME_DEFAULT_VALUE,
-} = require('./constants')
+
 const logger = require('./logger')
 
 const samplingInterval =
