@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. 
 See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.4"></a>
+# 1.0.4 (2022-05-06)
+
+### Features
+
+* Add env var flag (`MIDDY_PROFILER_ENABLE` which is `true` by default) to be able to enable/disable profiler
+
 <a name="1.0.3"></a>
 # 1.0.3 (2022-05-06)
 
