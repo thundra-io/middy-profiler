@@ -108,7 +108,7 @@ it can be configured by *environment variable* or *options* passed to middleware
   ```  
 
   - **By options:**
-  Pass the timeout margin through options.
+  Pass the sampling interval through options.
   ```javascript
   const profiler = require('middy-profiler');
 
@@ -130,7 +130,7 @@ It's value is `cpu_profile` by default but can be configured by *environment var
   ```  
 
   - **By options:**
-  Pass the file bame through options.
+  Pass the file name through options.
   ```javascript
   const profiler = require('middy-profiler');
 
@@ -144,6 +144,32 @@ It's value is `cpu_profile` by default but can be configured by *environment var
       );
   ```
   
+* **Optionally**, you can configure timeout margin which is the minimum remaining time 
+before the actual timeout happens to assume that invocation will timeout. 
+So we take action, finish the profiler and report the collected profiling data because when the timeout happens, 
+the game is over and there is nothing to do.
+By default, timeout margin is `1000` milliseconds and 
+it can be configured by *environment variable* or *options* passed to middleware:
+
+  - **By environment variable:**
+  Set `MIDDY_PROFILER_TIMEOUT_MARGIN` environment variable with the desired value for the timeout margin.
+  ```
+  MIDDY_PROFILER_TIMEOUT_MARGIN=500
+  ```  
+
+  - **By options:**
+  Pass the timeout margin through options.
+  ```javascript
+  const profiler = require('middy-profiler');
+
+  module.exports.handler = 
+      middy(handler).
+          use(profiler({
+              timeoutMargin: 500
+          })
+      );
+  ```
+
 * **Optionally**, you can disable/enable profiler without changing code even though it is registered to `middy` or self activated on bootstrap.
 
   - **By environment variable:**
