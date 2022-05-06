@@ -1,27 +1,35 @@
 let beforeInvocationCallback
 let afterInvocationCallback
 
-module.exports.registerBeforeInvocationCallback = function (cb) {
+const _registerBeforeInvocationCallback = (cb) => {
     beforeInvocationCallback = cb
 }
 
-module.exports.registerAfterInvocationCallback = function (cb) {
+const _registerAfterInvocationCallback = (cb) => {
     afterInvocationCallback = cb
 }
 
-module.exports.beforeInvocation = async function (event, context) {
+const _beforeInvocation = async (event, context) => {
     if (beforeInvocationCallback) {
         return beforeInvocationCallback(event, context)
     }
 }
 
-module.exports.afterInvocation = async function (
+const _afterInvocation = async (
     event,
     context,
     response,
-    error
-) {
+    error,
+    timeout = false
+) => {
     if (afterInvocationCallback) {
-        return afterInvocationCallback(event, context, response, error)
+        return afterInvocationCallback(event, context, response, error, timeout)
     }
+}
+
+module.exports = {
+    registerBeforeInvocationCallback: _registerBeforeInvocationCallback,
+    registerAfterInvocationCallback: _registerAfterInvocationCallback,
+    beforeInvocation: _beforeInvocation,
+    afterInvocation: _afterInvocation,
 }
