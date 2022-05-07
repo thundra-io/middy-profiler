@@ -144,7 +144,7 @@ It's value is `cpu_profile` by default but can be configured by *environment var
       );
   ```
   
-* **Optionally**, you can configure timeout margin which is the minimum remaining time 
+* **Optionally**, you can configure timeout margin (in **milliseconds**) which is the minimum remaining time 
 before the actual timeout happens to assume that invocation will timeout. 
 So we take action, finish the profiler and report the collected profiling data because when the timeout happens, 
 the game is over and there is nothing to do.
@@ -170,7 +170,7 @@ it can be configured by *environment variable* or *options* passed to middleware
       );
   ```
 
-* **Optionally**, you can configure start delay to start the profiler after specified amount of time 
+* **Optionally**, you can configure start delay (in **milliseconds**) to start the profiler after specified amount of time 
 (for ex. conditionally start profiler if invocation took longer than expected).
 It can be configured by *environment variable* or *options* passed to middleware:
 
@@ -193,7 +193,7 @@ It can be configured by *environment variable* or *options* passed to middleware
       );
   ```
   
-* **Optionally**, you can configure invocation duration threshold to be able to report profiling data 
+* **Optionally**, you can configure invocation duration threshold (in **milliseconds**) to be able to report profiling data 
 conditionally if the invocation duration is higher than the specified threshold.
 It can be configured by *environment variable* or *options* passed to middleware:
 
