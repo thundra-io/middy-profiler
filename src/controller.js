@@ -4,6 +4,7 @@ const {
     MIDDY_PROFILER_S3_PATH_PREFIX_ENV_VAR_NAME,
     MIDDY_PROFILER_S3_FILE_NAME_ENV_VAR_NAME,
     MIDDY_PROFILER_TIMEOUT_MARGIN_ENV_VAR_NAME,
+    MIDDY_PROFILER_START_DELAY_ENV_VAR_NAME,
     MIDDY_PROFILER_SAMPLING_INTERVAL_DEFAULT_VALUE,
     MIDDY_PROFILER_S3_FILE_NAME_DEFAULT_VALUE,
     MIDDY_PROFILER_TIMEOUT_MARGIN_DEFAULT_VALUE,
@@ -23,8 +24,12 @@ const bucketName = process.env[MIDDY_PROFILER_S3_BUCKET_NAME_ENV_VAR_NAME]
 const pathPrefix = process.env[MIDDY_PROFILER_S3_PATH_PREFIX_ENV_VAR_NAME]
 const fileName = process.env[MIDDY_PROFILER_S3_FILE_NAME_ENV_VAR_NAME]
 const timeoutMargin = process.env[MIDDY_PROFILER_TIMEOUT_MARGIN_ENV_VAR_NAME]
+const startDelay = parseInt(
+    process.env[MIDDY_PROFILER_START_DELAY_ENV_VAR_NAME]
+)
 
 let timeoutHandler
+let startDelayHandler
 
 const _setupTimeoutHandler = (opts, event, context) => {
     const _timeoutMargin =
@@ -47,15 +52,26 @@ const _destroyTimeoutHandler = () => {
     }
 }
 
-const _beforeInvocation = async (opts, event, context) => {
-    _destroyTimeoutHandler()
-    _setupTimeoutHandler(opts, event, context)
-
-    const _bucketName = bucketName || (opts && opts.s3 && opts.s3.bucketName)
-    if (!_bucketName) {
-        return
+const _setupStartDelayHandler = (opts) => {
+    const _startDelay = startDelay || (opts && opts.startDelay)
+    if (startDelay) {
+        startDelayHandler = setTimeout(async () => {
+            await _startProfiler(opts)
+        }, _startDelay)
+        startDelayHandler.unref()
+        return true
     }
+    return false
+}
 
+const _destroyStartDelayHandler = () => {
+    if (startDelayHandler) {
+        clearTimeout(startDelayHandler)
+        startDelayHandler = null
+    }
+}
+
+const _startProfiler = async (opts) => {
     const _samplingInterval =
         samplingInterval ||
         (opts && opts.samplingInterval) ||
@@ -69,6 +85,23 @@ const _beforeInvocation = async (opts, event, context) => {
     }
 }
 
+const _beforeInvocation = async (opts, event, context) => {
+    _destroyTimeoutHandler()
+    _setupTimeoutHandler(opts, event, context)
+
+    const _bucketName = bucketName || (opts && opts.s3 && opts.s3.bucketName)
+    if (!_bucketName) {
+        return
+    }
+
+    const _startDelayed = _setupStartDelayHandler(opts, event, context)
+    if (_startDelayed) {
+        return
+    }
+
+    await _startProfiler(opts)
+}
+
 const _afterInvocation = async (
     opts,
     event,
@@ -78,6 +111,8 @@ const _afterInvocation = async (
     timeout
 ) => {
     _destroyTimeoutHandler()
+
+    _destroyStartDelayHandler()
 
     if (!isProfilerStarted()) {
         return
