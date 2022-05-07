@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. 
 See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.6"></a>
+# 1.0.6 (2022-05-07)
+
+### Features
+
+* Add **"start-delay"** support (configured by `MIDDY_PROFILER_START_DELAY` env var or `startDelay` option) to be able to start profiler after specified time (for ex. invocation took longer than expected)
+
 <a name="1.0.5"></a>
 # 1.0.5 (2022-05-07)
 
