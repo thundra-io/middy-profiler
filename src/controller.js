@@ -56,7 +56,7 @@ const _setupStartDelayHandler = (opts) => {
     const _startDelay = startDelay || (opts && opts.startDelay)
     if (startDelay) {
         startDelayHandler = setTimeout(async () => {
-            await _startProfiler(opts)
+            await _doStartProfiler(opts)
         }, _startDelay)
         startDelayHandler.unref()
         return true
@@ -71,7 +71,7 @@ const _destroyStartDelayHandler = () => {
     }
 }
 
-const _startProfiler = async (opts) => {
+const _doStartProfiler = async (opts) => {
     const _samplingInterval =
         samplingInterval ||
         (opts && opts.samplingInterval) ||
@@ -85,17 +85,20 @@ const _startProfiler = async (opts) => {
     }
 }
 
+const _startProfiler = async (opts) => {
+    const _startDelayed = _setupStartDelayHandler(opts)
+    if (_startDelayed) {
+        return
+    }
+    await _doStartProfiler(opts)
+}
+
 const _beforeInvocation = async (opts, event, context) => {
     _destroyTimeoutHandler()
     _setupTimeoutHandler(opts, event, context)
 
     const _bucketName = bucketName || (opts && opts.s3 && opts.s3.bucketName)
     if (!_bucketName) {
-        return
-    }
-
-    const _startDelayed = _setupStartDelayHandler(opts, event, context)
-    if (_startDelayed) {
         return
     }
 
@@ -144,4 +147,5 @@ const _afterInvocation = async (
 module.exports = {
     beforeInvocation: _beforeInvocation,
     afterInvocation: _afterInvocation,
+    startProfiler: _startProfiler,
 }

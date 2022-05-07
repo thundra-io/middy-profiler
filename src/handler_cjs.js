@@ -1,22 +1,14 @@
 const loader = require('./loader.js')
-const { startProfiler } = require('./profiler.js')
-const {
-    MIDDY_PROFILER_SAMPLING_INTERVAL_ENV_VAR_NAME,
-    MIDDY_PROFILER_HANDLER_ENV_VAR_NAME,
-    MIDDY_PROFILER_SAMPLING_INTERVAL_DEFAULT_VALUE,
-} = require('./constants.js')
+const { startProfiler } = require('./controller.js')
+const { MIDDY_PROFILER_HANDLER_ENV_VAR_NAME } = require('./constants.js')
 const { beforeInvocation, afterInvocation } = require('./hooks.js')
 const logger = require('./logger.js')
-
-const samplingInterval =
-    parseInt(process.env[MIDDY_PROFILER_SAMPLING_INTERVAL_ENV_VAR_NAME]) ||
-    MIDDY_PROFILER_SAMPLING_INTERVAL_DEFAULT_VALUE
 
 let profilerPromise = null
 let userHandler = null
 
 try {
-    profilerPromise = startProfiler(samplingInterval)
+    profilerPromise = startProfiler()
 } catch (e) {
     logger.error('Unable to start profiler:', e)
 }

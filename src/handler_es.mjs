@@ -1,20 +1,14 @@
 import loader from './loader.js'
-import { startProfiler } from './profiler.js'
+import { startProfiler } from './controller.js'
 import {
-    MIDDY_PROFILER_SAMPLING_INTERVAL_ENV_VAR_NAME,
     MIDDY_PROFILER_HANDLER_ENV_VAR_NAME,
-    MIDDY_PROFILER_SAMPLING_INTERVAL_DEFAULT_VALUE,
 } from './constants.js'
 import { beforeInvocation, afterInvocation } from './hooks.js'
 import logger from './logger.js'
 
-const samplingInterval =
-    parseInt(process.env[MIDDY_PROFILER_SAMPLING_INTERVAL_ENV_VAR_NAME]) ||
-    MIDDY_PROFILER_SAMPLING_INTERVAL_DEFAULT_VALUE
-
 try {
     // Start profiler and wait for it
-    await startProfiler(samplingInterval)
+    await startProfiler()
 } catch (e) {
     logger.error('Unable to start profiler:', e)
 }
