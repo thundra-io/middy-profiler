@@ -115,9 +115,12 @@ const _beforeInvocation = async (opts, event, context) => {
     await _startProfiler(opts)
 }
 
-const _shouldReport = (invocationDuration) => {
-    if (reportDurationThreshold) {
-        return invocationDuration > reportDurationThreshold
+const _shouldReport = (opts, invocationDuration) => {
+    const _reportDurationThreshold =
+        reportDurationThreshold ||
+        (opts && opts.report && opts.report.durationThreshold)
+    if (_reportDurationThreshold) {
+        return invocationDuration > _reportDurationThreshold
     } else {
         return true
     }
@@ -151,7 +154,7 @@ const _afterInvocation = async (
             fileName ||
             (opts && opts.s3 && opts.s3.fileName) ||
             MIDDY_PROFILER_S3_FILE_NAME_DEFAULT_VALUE
-        if (_shouldReport(invocationDuration)) {
+        if (_shouldReport(opts, invocationDuration)) {
             await reportToS3(
                 _profilingData,
                 _bucketName,
