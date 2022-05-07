@@ -170,6 +170,29 @@ it can be configured by *environment variable* or *options* passed to middleware
       );
   ```
 
+* **Optionally**, you can configure start delay to start the profiler after specified amount of time 
+(for ex. conditionally start profiler if invocation took longer than expected).
+It can be configured by *environment variable* or *options* passed to middleware:
+
+  - **By environment variable:**
+  Set `MIDDY_PROFILER_START_DELAY` environment variable with the desired value for the profiler start delay.
+  ```
+  MIDDY_PROFILER_START_DELAY=5000
+  ```  
+
+  - **By options:**
+  Pass the start delay through options.
+  ```javascript
+  const profiler = require('middy-profiler');
+
+  module.exports.handler = 
+      middy(handler).
+          use(profiler({
+              startDelay: 5000
+          })
+      );
+  ```
+  
 * **Optionally**, you can disable/enable profiler without changing code even though it is registered to `middy` or self activated on bootstrap.
 
   - **By environment variable:**
