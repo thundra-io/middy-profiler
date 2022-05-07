@@ -5,6 +5,8 @@ const {
     MIDDY_PROFILER_S3_FILE_NAME_ENV_VAR_NAME,
     MIDDY_PROFILER_TIMEOUT_MARGIN_ENV_VAR_NAME,
     MIDDY_PROFILER_START_DELAY_ENV_VAR_NAME,
+    MIDDY_PROFILER_REPORT_DURATION_THRESHOLD_ENV_VAR_NAME,
+
     MIDDY_PROFILER_SAMPLING_INTERVAL_DEFAULT_VALUE,
     MIDDY_PROFILER_S3_FILE_NAME_DEFAULT_VALUE,
     MIDDY_PROFILER_TIMEOUT_MARGIN_DEFAULT_VALUE,
@@ -27,9 +29,14 @@ const timeoutMargin = process.env[MIDDY_PROFILER_TIMEOUT_MARGIN_ENV_VAR_NAME]
 const startDelay = parseInt(
     process.env[MIDDY_PROFILER_START_DELAY_ENV_VAR_NAME]
 )
+const reportDurationThreshold = parseInt(
+    process.env[MIDDY_PROFILER_REPORT_DURATION_THRESHOLD_ENV_VAR_NAME]
+)
 
 let timeoutHandler
 let startDelayHandler
+let invocationCount = 0
+let invocationStartTime = 0
 
 const _setupTimeoutHandler = (opts, event, context) => {
     const _timeoutMargin =
@@ -94,6 +101,9 @@ const _startProfiler = async (opts) => {
 }
 
 const _beforeInvocation = async (opts, event, context) => {
+    invocationCount++
+    invocationStartTime = Date.now()
+
     _destroyTimeoutHandler()
     _setupTimeoutHandler(opts, event, context)
 
@@ -105,6 +115,14 @@ const _beforeInvocation = async (opts, event, context) => {
     await _startProfiler(opts)
 }
 
+const _shouldReport = (invocationDuration) => {
+    if (reportDurationThreshold) {
+        return invocationDuration > reportDurationThreshold
+    } else {
+        return true
+    }
+}
+
 const _afterInvocation = async (
     opts,
     event,
@@ -113,6 +131,8 @@ const _afterInvocation = async (
     error,
     timeout
 ) => {
+    const invocationDuration = Date.now() - invocationStartTime
+
     _destroyTimeoutHandler()
 
     _destroyStartDelayHandler()
@@ -131,14 +151,16 @@ const _afterInvocation = async (
             fileName ||
             (opts && opts.s3 && opts.s3.fileName) ||
             MIDDY_PROFILER_S3_FILE_NAME_DEFAULT_VALUE
-        await reportToS3(
-            _profilingData,
-            _bucketName,
-            _pathPrefix,
-            _fileName,
-            context.functionName,
-            context.awsRequestId
-        )
+        if (_shouldReport(invocationDuration)) {
+            await reportToS3(
+                _profilingData,
+                _bucketName,
+                _pathPrefix,
+                _fileName,
+                context.functionName,
+                context.awsRequestId
+            )
+        }
     } catch (e) {
         logger.error('Unable to finish profiler:', e)
     }
