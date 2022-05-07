@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. 
 See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.8"></a>
+# 1.0.8 (2022-05-07)
+
+### Features
+
+* Add **"report duration threshold"** support  (configured by `MIDDY_PROFILER_REPORT_DURATION_THRESHOLD` env var) to be able to report profiling data conditionally if the invocation duration is higher than the specified threshold
+
 <a name="1.0.7"></a>
 # 1.0.7 (2022-05-07)
 
