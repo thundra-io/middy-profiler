@@ -193,6 +193,31 @@ It can be configured by *environment variable* or *options* passed to middleware
       );
   ```
   
+* **Optionally**, you can configure invocation duration threshold to be able to report profiling data 
+conditionally if the invocation duration is higher than the specified threshold.
+It can be configured by *environment variable* or *options* passed to middleware:
+
+  - **By environment variable:**
+  Set `MIDDY_PROFILER_REPORT_DURATION_THRESHOLD` environment variable with the desired value for the invocation duration threshold to report profiling data conditionally.
+  ```
+  MIDDY_PROFILER_REPORT_DURATION_THRESHOLD=10000
+  ```  
+
+  - **By options:**
+  Pass the report duration threshold through options.
+  ```javascript
+  const profiler = require('middy-profiler');
+
+  module.exports.handler = 
+      middy(handler).
+          use(profiler({
+              report: {
+                  durationThreshold: 10000
+              }    
+          })
+      );
+  ```
+  
 * **Optionally**, you can disable/enable profiler without changing code even though it is registered to `middy` or self activated on bootstrap.
 
   - **By environment variable:**
