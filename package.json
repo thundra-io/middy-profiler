@@ -1,6 +1,6 @@
 {
   "name": "middy-profiler",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Middy AWS Lambda CPU profiler middleware",
   "author": "Serkan Özal <serkanozal86@gmail.com> (https://github.com/serkan-ozal)",
   "homepage": "https://github.com/serkan-ozal/middy-profiler",
