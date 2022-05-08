@@ -31,15 +31,34 @@ Then, you can download the CPU profiling file from AWS S3 and open with any CPU 
  
 ## Installation
 
+You can add `middy-profiler` package into your AWS Lambda function either by NPM package or by AWS Lambda layer as shown below:
+
+### By NPM package
+
 To install the middleware, you can use NPM:
 
 ```
 npm install --save middy-profiler
 ```
 
-**Note 1:** Requires `@middy/core` version `2.0.0`+. 
+### By AWS Lambda Layer
 
-**Note 2:** There is also **standalone** mode to be able to use `middy-profiler` without `middy` framework. You can check [Standalone Usage (without Middy)](#standalone-usage-without-middy) section for the details.
+You can also add `middy-profiler` as layer into your AWS Lambda function.
+
+```
+arn:aws:lambda:${region}:273094347961:layer:middy-profiler:${layer-version}
+
+```
+
+**Latest layer version:** ![middy-profiler](https://api.globadge.com/v1/badgen/aws/lambda/layer/latest-version/us-east-1/273094347961/middy-profiler)
+
+**Note:** In the ARN above, you need to replace `${region}` with the actual AWS region you deployed your AWS Lambda function. 
+
+### Notes on installation
+
+- The `middy-profiler` requires `@middy/core` version `2.0.0`+. 
+
+- There is also **standalone** mode to be able to use `middy-profiler` without `middy` framework. You can check [Standalone Usage (without Middy)](#standalone-usage-without-middy) section for the details.
 
 
 ## Usage
