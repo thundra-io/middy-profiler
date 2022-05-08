@@ -50,7 +50,7 @@ arn:aws:lambda:${region}:273094347961:layer:middy-profiler:${layer-version}
 
 ```
 
-**Latest layer version:** ![middy-profiler](https://api.globadge.com/v1/badgen/aws/lambda/layer/latest-version/us-east-1/273094347961/middy-profiler)
+**Latest layer version:** ![middy-profiler](https://api.globadge.com/v1/badgen/aws/lambda/layer/latest-version/us-east-1/273094347961/middy-profiler) (badge powered by [Globadge serverless](https://www.globadge.com/badges/serverless))
 
 **Note:** In the ARN above, you need to replace `${region}` with the actual AWS region you deployed your AWS Lambda function. 
 
